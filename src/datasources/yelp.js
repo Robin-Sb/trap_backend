@@ -4,22 +4,6 @@ import { GraphQLClient } from 'graphql-request'
 import { YELP_API_KEY } from '../config';
 
 
-const YELP_POI = gql`{
-  search(term: $term, latitude: 52.520008, longitude: 13.404954, radius: 10000, limit: 15) {
-    total
-    business {
-      name
-      id
-      rating
-      url
-      coordinates {
-        latitude
-        longitude
-      }
-    }
-  }
-}`;  
-
 export class YelpAPI {
   async getYelpPOIs(args) {
     console.log(args)
@@ -53,7 +37,6 @@ export class YelpAPI {
       }
     }`
     const data = await client.request(query, variables);
-    // console.log(data);
     return data.search;
   }
 }
