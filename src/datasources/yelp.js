@@ -1,9 +1,11 @@
 import {GraphQLDataSource} from 'apollo-datasource-graphql';
 import {gql} from 'apollo-server-express';
 import { GraphQLClient } from 'graphql-request'
+import { YELP_API_KEY } from '../config';
+
 
 const YELP_POI = gql`{
-      search(term: "burrito", location: "san francisco", limit: 5) {
+      search(term: "food", latitude: 52.520008, longitude: 13.404954, radius: 10000, limit: 15) {
         total
         business {
           name
@@ -19,17 +21,15 @@ const YELP_POI = gql`{
 }`;  
 
 export class YelpAPI extends GraphQLDataSource {
-    // baseURL = 'https://api.yelp.com/v3/graphql';
     constructor() {
         super();
         this.baseURL = "https://api.yelp.com/v3/graphql";
-        this.key =  "Bearer FfLMJXvs0iVD5I5K8x5BHaz7dWbv64WzwSDOw0I_HkqNlc4aTaoUvd2KyFPAMi_Mhrqi-ABmzJbXhh-Tu44eqmeAuNwEZ6uJtDf5IyEaNlQkT_-dLnu5bwZK3_aAXHYx";
+        this.key = YELP_API_KEY;
     }
     
     async getYelpPOIs() {
         try {
             const response = await this.query(YELP_POI);
-            console.log(response.data);
             
             return response.data.search;
         } catch (error) {
@@ -38,11 +38,10 @@ export class YelpAPI extends GraphQLDataSource {
     };
 
     willSendRequest(request) {
-        const { accessToken } = this.key;    
-        if (!request.headers) {
-          request.headers = {};
-        }
-        request.headers.authorization = this.key;
+      if (!request.headers) {
+        request.headers = {};
+      }
+      request.headers.authorization = this.key;
     }
 };
 
@@ -50,7 +49,7 @@ export class YelpAPI extends GraphQLDataSource {
 //     async yelpRequest() {
 //         const client = new GraphQLClient('https://api.yelp.com/v3/graphql', {
 //             headers: {
-//               Authorization: "Bearer FfLMJXvs0iVD5I5K8x5BHaz7dWbv64WzwSDOw0I_HkqNlc4aTaoUvd2KyFPAMi_Mhrqi-ABmzJbXhh-Tu44eqmeAuNwEZ6uJtDf5IyEaNlQkT_-dLnu5bwZK3_aAXHYx",
+//               Authorization: YELP_API_KEY
 //             },
 //           })
           
