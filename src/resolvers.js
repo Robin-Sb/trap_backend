@@ -1,7 +1,6 @@
 module.exports = {
-    Query: {
-      search: async (_, __, { dataSources }) =>
-        dataSources.yelpAPI.getYelpPOIs()
-    },
-  };
-  
+  Query: {
+    search: async (_, __, context) =>
+      context.yelpAPI.getYelpPOIs(context.variables)
+  },
+};

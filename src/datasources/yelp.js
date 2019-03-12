@@ -5,7 +5,40 @@ import { YELP_API_KEY } from '../config';
 
 
 const YELP_POI = gql`{
-      search(term: "food", latitude: 52.520008, longitude: 13.404954, radius: 10000, limit: 15) {
+  search(term: $term, latitude: 52.520008, longitude: 13.404954, radius: 10000, limit: 15) {
+    total
+    business {
+      name
+      id
+      rating
+      url
+      coordinates {
+        latitude
+        longitude
+      }
+    }
+  }
+}`;  
+
+export class YelpAPI {
+  async getYelpPOIs(args) {
+    console.log(args)
+    const client = new GraphQLClient('https://api.yelp.com/v3/graphql', {
+      headers: {
+        Authorization: YELP_API_KEY
+      },
+    })
+      
+    var variables = {
+      term: args.term,
+      latitude: args.latitude,
+      longitude: args.longitude,
+      radius: args.radius,
+      limit: args.limit,
+    };
+
+    var query = `query Query($term: String!, $latitude: Float!, $longitude: Float!, $radius: Float!, $limit: Int!){
+      search(term: $term, latitude: $latitude, longitude: $longitude, radius: $radius, limit: $limit) {
         total
         business {
           name
@@ -18,60 +51,43 @@ const YELP_POI = gql`{
           }
         }
       }
-}`;  
+    }`
+    const data = await client.request(query, variables);
+    // console.log(data);
+    return data.search;
+  }
+}
 
-export class YelpAPI extends GraphQLDataSource {
-    constructor() {
-        super();
-        this.baseURL = "https://api.yelp.com/v3/graphql";
-        this.key = YELP_API_KEY;
-    }
-    
-    async getYelpPOIs() {
-        try {
-            const response = await this.query(YELP_POI);
-            
-            return response.data.search;
-        } catch (error) {
-            console.error(error);
-        };
-    };
-
-    willSendRequest(request) {
-      if (!request.headers) {
-        request.headers = {};
-      }
-      request.headers.authorization = this.key;
-    }
-};
-
-// export class YelpAPI {
-//     async yelpRequest() {
-//         const client = new GraphQLClient('https://api.yelp.com/v3/graphql', {
-//             headers: {
-//               Authorization: YELP_API_KEY
-//             },
-//           })
-          
-//         var result;
-
-//         var query = `{
-//           business(id: "garaje-san-francisco") {
-//               name
-//               id
-//               rating
-//               url
-//           }
-//         }`
-//         const data = await client.request(query);
-//         // client.request(query).then(
-//         //   data => {
-//         //     result = data;
-//         //   }
-//         // );
-//         console.log(data);
-//         return data;
+// export class YelpAPI extends GraphQLDataSource {
+//     constructor() {
+//         super();
+//         this.baseURL = "https://api.yelp.com/v3/graphql";
+//         this.key = YELP_API_KEY;
 //     }
-// }
+
+    
+//     async getYelpPOIs() {
+//       const variables = {
+//         term: 'food',
+//       }
+    
+//         try {
+//           const response = await this.query(YELP_POI, {
+//             variables: variables
+//           });
+          
+//           return response.data.search;
+//         } catch (error) {
+//             console.error(error);
+//         };
+//     };
+
+//     willSendRequest(request) {
+//       if (!request.headers) {
+//         request.headers = {};
+//       }
+//       request.headers.authorization = this.key;
+//     }
+// };
 
 module.exports = YelpAPI;

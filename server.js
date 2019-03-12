@@ -3,7 +3,6 @@ require("@babel/polyfill");
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
-
 const PORT = 4000;
 
 const app = express();
@@ -17,9 +16,13 @@ const YelpAPI = require('./src/datasources/yelp')
 const server = new ApolloServer({ 
   typeDefs, 
   resolvers,
-  dataSources: () => ({
-    yelpAPI: new YelpAPI()
+  context: ({req}) => ({
+    variables: req.body.variables,
+    yelpAPI: new YelpAPI(),
   })
+  // dataSources: () => ({
+  //   yelpAPI: new YelpAPI(),
+  // })
 });
 
 server.applyMiddleware({ app });
