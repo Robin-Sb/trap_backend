@@ -13,16 +13,15 @@ const resolvers = require('./src/resolvers');
 
 const YelpAPI = require('./src/datasources/yelp')
 
+// const CustomPOI = require('./src/datasources/custom_poi')
+
 const server = new ApolloServer({ 
   typeDefs, 
   resolvers,
   context: ({req}) => ({
     variables: req.body.variables,
-    yelpAPI: new YelpAPI(),
+    yelpAPI: new YelpAPI()
   })
-  // dataSources: () => ({
-  //   yelpAPI: new YelpAPI(),
-  // })
 });
 
 server.applyMiddleware({ app });
