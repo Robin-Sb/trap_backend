@@ -1,5 +1,3 @@
-import {GraphQLDataSource} from 'apollo-datasource-graphql';
-import {gql} from 'apollo-server-express';
 import { GraphQLClient } from 'graphql-request'
 import { YELP_API_KEY } from '../config';
 
@@ -40,37 +38,4 @@ export class YelpAPI {
     return data.search;
   }
 }
-
-// export class YelpAPI extends GraphQLDataSource {
-//     constructor() {
-//         super();
-//         this.baseURL = "https://api.yelp.com/v3/graphql";
-//         this.key = YELP_API_KEY;
-//     }
-
-    
-//     async getYelpPOIs() {
-//       const variables = {
-//         term: 'food',
-//       }
-    
-//         try {
-//           const response = await this.query(YELP_POI, {
-//             variables: variables
-//           });
-          
-//           return response.data.search;
-//         } catch (error) {
-//             console.error(error);
-//         };
-//     };
-
-//     willSendRequest(request) {
-//       if (!request.headers) {
-//         request.headers = {};
-//       }
-//       request.headers.authorization = this.key;
-//     }
-// };
-
 module.exports = YelpAPI;

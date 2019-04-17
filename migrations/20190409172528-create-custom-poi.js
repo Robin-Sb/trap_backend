@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('CustomPOIs', {
+    return queryInterface.createTable('CustomPOI', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -33,10 +33,10 @@ module.exports = {
       isEnabled: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
-      }
+      }    
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('CustomPOIs');
+    return queryInterface.dropTable('CustomPOI');
   }
 };

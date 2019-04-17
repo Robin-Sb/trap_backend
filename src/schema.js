@@ -5,7 +5,7 @@ scalar DateTime
 
 type Query {
   yelpPOI: Yelp 
-  customPOI (latitude: Float!, longitude: Float!): [CustomPOI]
+  customPOI (latitude: Float!, longitude: Float!, term: String!): [CustomPOI]
 }
 
 type Yelp {
@@ -38,6 +38,7 @@ type Mutation {
         description: String,
         latitude: Float!
         longitude: Float!
+        tags: [String]
     ): CustomPOI
 
 }

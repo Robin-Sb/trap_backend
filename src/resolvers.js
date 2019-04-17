@@ -8,17 +8,25 @@ const { GraphQLScalarType } = require('graphql');
         context.yelpAPI.getYelpPOIs(context.variables),
 
         async customPOI(_, args) {
-            return models.CustomPOI.radiusQuery(args.latitude, args.longitude);
+            return models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term);
     },
 }, 
     Mutation: {
-        async createPOI (_, {name, description, latitude, longitude}) {
-            return await models.CustomPOI.create({
+        async createPOI (_, {name, description, latitude, longitude, tags}) {
+            const poi = await models.CustomPOI.create({
                 name,
                 description,
                 latitude,
                 longitude
             })
+            // console.log(user);
+            for (var i = 0; i < tags.length; i++) {
+                await models.Tag.create({
+                    name: tags[i],
+                    poiId: poi.id
+                })
+            }
+            return poi;
         }
     },
     DateTime: new GraphQLScalarType({
