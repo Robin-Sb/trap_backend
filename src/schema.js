@@ -26,8 +26,7 @@ type Coordinates {
 type CustomPOI {
   name: String
   description: String
-  latitude: Float
-  longitude: Float
+  coordinates: Coordinates
   createdAt: DateTime
   updatedAt: DateTime
 }
