@@ -4,7 +4,7 @@ const typeDefs = gql`
 scalar DateTime
 
 type Query {
-  yelpPOI: Yelp 
+  yelpPOI: [Business] 
   customPOI (latitude: Float!, longitude: Float!, term: String!): [CustomPOI]
 }
 
@@ -14,7 +14,10 @@ type Yelp {
 }
 
 type Business {
+  id: String
   name: String
+  rating: String
+  url: String
   coordinates: Coordinates 
 }
 
@@ -29,6 +32,12 @@ type CustomPOI {
   coordinates: Coordinates
   createdAt: DateTime
   updatedAt: DateTime
+  tags: [Tag]
+}
+
+type Tag {
+    name: String
+    id: Int
 }
 
 type Mutation {
@@ -37,9 +46,12 @@ type Mutation {
         description: String,
         latitude: Float!
         longitude: Float!
-        tags: [String]
+        tags: [Int]
     ): CustomPOI
 
+    addTag (
+        name: String!
+    ): Tag
 }
 `;
 

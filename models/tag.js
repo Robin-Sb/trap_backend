@@ -1,11 +1,30 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Tag = sequelize.define('Tag', {
-    name: DataTypes.STRING
-  }, {});
+    id: {
+
+        type: DataTypes.INTEGER,
+
+        primaryKey: true,
+
+        autoIncrement: true,
+
+        allowNull: false
+
+    },
+
+    name: {
+
+        type: DataTypes.STRING,
+
+        unique: true,
+
+        allowNull: false
+
+    },
+    });
   Tag.associate = function(models) {
-      Tag.belongsTo(models.CustomPOI, {foreignKey: 'poiId'});
-    // associations can be defined here
+    Tag.belongsToMany(models.CustomPOI, { through: 'poi_tag' });
   };
   return Tag;
 };

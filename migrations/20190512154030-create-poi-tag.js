@@ -1,16 +1,20 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tags', {
+    return queryInterface.createTable('poi_tag', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING,
+      custompoiId: {
+        type: Sequelize.INTEGER,
         allowNull: false
+      },
+      tagId: {
+          type: Sequelize.INTEGER,
+          allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -19,18 +23,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-    //   poiId: { 
-    //     type: Sequelize.INTEGER,
-    //     allowNull: false,
-    //     references: {
-    //         model: "CustomPOIs",
-    //         key: "id"
-    //     }
-    //   }
+      }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tags');
+    return queryInterface.dropTable('poi_tag');
   }
 };

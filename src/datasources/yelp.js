@@ -4,7 +4,6 @@ import { YELP_API_KEY } from '../config';
 
 export class YelpAPI {
   async getYelpPOIs(args) {
-    console.log(args)
     const client = new GraphQLClient('https://api.yelp.com/v3/graphql', {
       headers: {
         Authorization: YELP_API_KEY
