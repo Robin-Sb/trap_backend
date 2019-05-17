@@ -13,6 +13,9 @@ const resolvers = require('./src/resolvers');
 
 const YelpAPI = require('./src/datasources/yelp')
 
+const FoursquareAPI = require('./src/datasources/foursquare')
+
+
 // const CustomPOI = require('./src/datasources/custom_poi')
 
 const server = new ApolloServer({ 
@@ -20,7 +23,8 @@ const server = new ApolloServer({
   resolvers,
   context: ({req}) => ({
     variables: req.body.variables,
-    yelpAPI: new YelpAPI()
+    yelpAPI: new YelpAPI(),
+    foursquareAPI: new FoursquareAPI()
   })
 });
 

@@ -1,21 +1,24 @@
 const models = require( '../models/index');
 const { GraphQLScalarType } = require('graphql');
 
-const { CustomPOI } = require('../models');
-
 const resolvers =
 {
     Query: {
-        async yelpPOI (_, __, context) {
-            const yelp = await context.yelpAPI.getYelpPOIs(context.variables);
+        async yelpPOI (_, args, context) {
+            const yelp = await context.yelpAPI.getYelpPOIs(args);
             return yelp.business;
         },
-
+ 
         customPOI (_, args) {
             return models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term).then(
                 poi => { return poi }
             );
         },
+
+        async foursquarePOI (_, args, context) {
+            const poi = await context.foursquareAPI.getPOIs(args);
+            return poi.venues;
+        }
     },
 
     CustomPOI: {
@@ -24,6 +27,15 @@ const resolvers =
                 latitude: obj.latitude,
                 longitude: obj.longitude
             } 
+        }
+    },
+
+    FoursquarePOI: {
+        coordinates (obj) {
+            return {
+                latitude: obj.location.lat,
+                longitude: obj.location.lng
+            }
         }
     },
      

@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+  }, {
+      tableName: "custompois"
   });
   CustomPOI.associate = function(models) {
       CustomPOI.belongsToMany(models.Tag, {through: 'poi_tag'});

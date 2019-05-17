@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "apollo-datasource-graphql": "^1.2.2",
+    "apollo-datasource-rest": "^0.4.0",
     "apollo-server": "^2.4.8",
     "apollo-server-express": "^2.4.8",
     "dotenv": "^6.2.0",
@@ -19,7 +20,8 @@
     "graphql": "^14.1.1",
     "graphql-request": "^1.8.2",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.7.1"
+    "sequelize": "^5.7.1",
+    "sudo": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",

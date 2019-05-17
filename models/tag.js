@@ -22,7 +22,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
 
     },
-    });
+    }, 
+    {
+      tableName: "tags"
+    }
+    );
   Tag.associate = function(models) {
     Tag.belongsToMany(models.CustomPOI, { through: 'poi_tag' });
   };

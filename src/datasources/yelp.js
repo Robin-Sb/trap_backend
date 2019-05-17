@@ -1,7 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 import { YELP_API_KEY } from '../config';
 
-
 export class YelpAPI {
   async getYelpPOIs(args) {
     const client = new GraphQLClient('https://api.yelp.com/v3/graphql', {
@@ -11,15 +10,16 @@ export class YelpAPI {
     })
       
     var variables = {
-      term: args.term,
+      term: args.term || undefined,
       latitude: args.latitude,
       longitude: args.longitude,
-      radius: args.radius,
-      limit: args.limit,
+      radius: args.radius || undefined,
+      limit: args.limit || undefined,
+      categories: args.categories || undefined
     };
 
-    var query = `query Query($term: String!, $latitude: Float!, $longitude: Float!, $radius: Float!, $limit: Int!){
-      search(term: $term, latitude: $latitude, longitude: $longitude, radius: $radius, limit: $limit) {
+    var query = `query Query($term: String, $latitude: Float!, $longitude: Float!, $radius: Float, $limit: Int, $categories: String){
+      search(term: $term, latitude: $latitude, longitude: $longitude, radius: $radius, limit: $limit, categories: $categories) {
         total
         business {
           name
