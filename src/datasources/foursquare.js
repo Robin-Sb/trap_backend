@@ -16,14 +16,25 @@ class FoursquareAPI extends RESTDataSource {
     }
   
     async getPOIs(args) {
-      const data = await this.get('search', {
-        query: args.term,
+      const query = {
         ll: args.latitude + "," + args.longitude,
         intent: "checkin",
         radius: 40000,
         limit: 15,
-        categories: args.categories || undefined
-      });
+      }
+
+      if (args.term != undefined || args.term != null) {
+        query.query = args.term;
+      }
+
+      if (args.categories != undefined || args.categories != null) {
+        query.categoryId = args.categories;
+      }
+
+      console.log(query);
+
+
+      const data = await this.get('search', query);
       return data.response;
     }
 }
