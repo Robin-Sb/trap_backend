@@ -22,6 +22,7 @@ const server = new ApolloServer({
   typeDefs, 
   resolvers,
   context: ({req}) => ({
+    query: req.body.query,
     variables: req.body.variables,
     yelpAPI: new YelpAPI(),
     foursquareAPI: new FoursquareAPI()

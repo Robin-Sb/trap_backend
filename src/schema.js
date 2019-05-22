@@ -4,6 +4,7 @@ const typeDefs = gql`
 scalar DateTime
 
 type Query {
+  getPOI(latitude: Float!, longitude: Float!, term: String, radius: Int, limit: Int, categories: String, radius: Int, limit: Int): POI
   yelpPOI (latitude: Float!, longitude: Float!, term: String, radius: Int, limit: Int, categories: String): [YelpPOI] 
   customPOI (latitude: Float!, longitude: Float!, term: String!): [CustomPOI]
   foursquarePOI (latitude: Float!, longitude: Float!, term: String, categories: String): [FoursquarePOI]
@@ -13,6 +14,12 @@ type Query {
 #   total: Int
 #   business: [Business]
 # }
+
+type POI {
+  yelpPOI: [YelpPOI]
+  customPOI: [CustomPOI]
+  foursquarePOI: [FoursquarePOI]
+}
 
 type YelpPOI {
   id: String

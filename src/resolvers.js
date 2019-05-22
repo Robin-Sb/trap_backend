@@ -5,7 +5,7 @@ const resolvers =
 {
     Query: {
         async yelpPOI (_, args, context) {
-            const yelp = await context.yelpAPI.getYelpPOIs(args);
+            const yelp = await context.yelpAPI.getPOIs(args);
             return yelp.business;
         },
  
@@ -18,6 +18,50 @@ const resolvers =
         async foursquarePOI (_, args, context) {
             const poi = await context.foursquareAPI.getPOIs(args);
             return poi.venues;
+        },
+
+        async getPOI (_, args, context) {
+            var query = context.query;
+            var yelpPOIs = {};
+            var yelpBusiness = []
+            var foursquarePOIs = {};
+            var foursquareVenues = [];
+            var customPOIs = [];
+            if (query.includes("yelpPOI")) {
+                yelpPOIs = await context.yelpAPI.getPOIs(args);
+                yelpBusiness = yelpPOIs.business;
+                console.log("executed yelp");
+            } 
+
+            if (query.includes("foursquarePOI")) {
+                foursquarePOIs = await context.foursquareAPI.getPOIs(args);
+                foursquareVenues = foursquarePOIs.venues;
+                console.log("executed foursquare");
+            }
+
+            if (query.includes("customPOI")) {
+                customPOIs = await models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term);
+                console.log("executed custom");
+            }
+
+            var pois = {};
+            for (var i = 0; i < yelpBusiness.length; i++) {
+                for (var j = 0; j < foursquareVenues.length; j++) {
+                    var currentYelp = yelpBusiness[i];
+                    var currentFS = foursquareVenues[j];
+                    var lngDiff = Math.abs(currentYelp.coordinates.longitude - currentFS.location.lng);
+                    var latDiff = Math.abs(currentYelp.coordinates.latitude - currentFS.location.lat);
+                    if (currentYelp.name.toUpperCase() == currentFS.name.toUpperCase() && latDiff < 0.05 && lngDiff < 0.05) {
+                        yelpBusiness.splice(i,1);
+                        i--;
+                    }
+                }
+            }
+
+            pois.yelpPOIs = yelpBusiness;
+            pois.foursquarePOIs = foursquareVenues;
+            pois.customPOIs = customPOIs;
+            return pois;
         }
     },
 
@@ -36,6 +80,18 @@ const resolvers =
                 latitude: obj.location.lat,
                 longitude: obj.location.lng
             }
+        }
+    },
+
+    POI: {
+        yelpPOI (obj) {
+            return obj.yelpPOIs;
+        },
+        foursquarePOI (obj) {
+            return obj.foursquarePOIs;
+        },
+        customPOI (obj) {
+            return obj.customPOIs;
         }
     },
      
