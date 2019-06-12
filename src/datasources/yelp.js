@@ -14,11 +14,14 @@ export class YelpAPI {
       longitude: args.longitude,
       radius: args.radius || undefined,
       limit: args.limit || undefined,
-      categories: args.categories || undefined
     };
-    console.log(variables);
-    if(args.term != null & args.term != undefined) {
+    
+    if (args.term != null & args.term != undefined) {
       variables.term = args.term;
+    }
+
+    if (args.yelpCategories != undefined || args.yelpCategories != null) {
+        variables.categories = args.yelpCategories;
     }
 
     var query = `query Query($term: String, $latitude: Float!, $longitude: Float!, $radius: Float, $limit: Int, $categories: String){

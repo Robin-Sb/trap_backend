@@ -39,12 +39,13 @@ const resolvers =
                 console.log("executed foursquare");
             }
 
-            if (query.includes("customPOI")) {
-                customPOIs = await models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term);
-                console.log("executed custom");
-            }
+            // if (query.includes("customPOI")) {
+            //     customPOIs = await models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term);
+            //     console.log("executed custom");
+            // }
 
             var pois = {};
+			console.log(yelpBusiness.length);
             for (var i = 0; i < yelpBusiness.length; i++) {
                 for (var j = 0; j < foursquareVenues.length; j++) {
                     var currentYelp = yelpBusiness[i];
@@ -52,15 +53,14 @@ const resolvers =
                     var lngDiff = Math.abs(currentYelp.coordinates.longitude - currentFS.location.lng);
                     var latDiff = Math.abs(currentYelp.coordinates.latitude - currentFS.location.lat);
                     if (currentYelp.name.toUpperCase() == currentFS.name.toUpperCase() && latDiff < 0.05 && lngDiff < 0.05) {
-                        yelpBusiness.splice(i,1);
-                        i--;
+                        foursquareVenues.splice(j,1);
                     }
                 }
             }
 
             pois.yelpPOIs = yelpBusiness;
             pois.foursquarePOIs = foursquareVenues;
-            pois.customPOIs = customPOIs;
+            // pois.customPOIs = customPOIs;
             return pois;
         }
     },
@@ -90,9 +90,9 @@ const resolvers =
         foursquarePOI (obj) {
             return obj.foursquarePOIs;
         },
-        customPOI (obj) {
-            return obj.customPOIs;
-        }
+        // customPOI (obj) {
+        //     return obj.customPOIs;
+        // }
     },
      
     Mutation: {

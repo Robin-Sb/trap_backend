@@ -26,11 +26,10 @@ class FoursquareAPI extends RESTDataSource {
       if (args.term != undefined || args.term != null) {
         query.query = args.term;
       }
-      query.categoryId = "4bf58dd8d48988d113951735";
 
-      // if (args.categories != undefined || args.categories != null) {
-      //   query.categoryId = args.categories;
-      // }
+      if (args.foursquareCategories != undefined || args.foursquareCategories != null) {
+        query.categoryId = args.foursquareCategories;
+      }
 
       const data = await this.get('search', query);
       return data.response;
