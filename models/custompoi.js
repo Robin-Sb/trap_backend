@@ -49,5 +49,33 @@ module.exports = (sequelize, DataTypes) => {
     })
     return resolve;
   }
+
+  CustomPOI.radiusQueryWithCategory = async function(latitude, longitude, term, category) {
+    var queryAppends = "";
+    var categories = category.split(',');
+    var replacements = { latitude: latitude, longitude: longitude, term: `%${term}%`};
+    var categoryReplacements = [];
+    for (var i = 0; i < categories.length; i++) {
+        queryAppends += " AND t.name IN(:category) ";
+        categoryReplacements[i] = `${categories[i]}`;
+    }
+
+    replacements.category = categories;
+
+    var resolve;
+    await sequelize.query(
+        "SELECT DISTINCT p.id, p.name, p.description, p.longitude, p.latitude, p.createdAt, p.updatedAt FROM custompois p "
+        + "JOIN poi_tag pt ON p.id = pt.custompoiId JOIN tags t ON t.id = pt.tagId "
+        + "WHERE ( acos(sin(p.latitude * 0.0175) * sin(:latitude * 0.0175) + cos(p.latitude * 0.0175) * cos(:latitude * 0.0175) * cos((:longitude * 0.0175) - (p.longitude * 0.0175))) * 6371 <= 20) "
+        + "AND (p.name LIKE :term OR p.description LIKE :term " 
+        + "OR (t.name LIKE :term)) AND t.name IN(:category)"
+        ,
+    { replacements: replacements, type: sequelize.QueryTypes.SELECT }
+    ).then(projects => {
+        resolve = projects;
+    })
+    return resolve;
+  }
+
   return CustomPOI;
 };

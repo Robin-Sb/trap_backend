@@ -6,7 +6,7 @@ scalar DateTime
 type Query {
   getPOI(latitude: Float!, longitude: Float!, term: String, radius: Int, limit: Int, yelpCategories: String, foursquareCategories: String, radius: Int, limit: Int): POI
   yelpPOI (latitude: Float!, longitude: Float!, term: String, radius: Int, limit: Int, categories: String): [YelpPOI] 
-  customPOI (latitude: Float!, longitude: Float!, term: String!): [CustomPOI]
+  customPOI (latitude: Float!, longitude: Float!, term: String!, category: String): [CustomPOI]
   foursquarePOI (latitude: Float!, longitude: Float!, term: String, categories: String): [FoursquarePOI]
 }
 

@@ -10,9 +10,15 @@ const resolvers =
         },
  
         customPOI (_, args) {
-            return models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term).then(
-                poi => { return poi }
-            );
+            if (args.category == null) {
+                return models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term).then(
+                    poi => { return poi }
+                );    
+            } else {
+                return models.CustomPOI.radiusQueryWithCategory(args.latitude, args.longitude, args.term, args.category).then(
+                    poi => { return poi }
+                );    
+            }
         },
 
         async foursquarePOI (_, args, context) {
