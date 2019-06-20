@@ -14,9 +14,9 @@ export class YelpAPI {
       longitude: args.longitude,
       radius: args.radius || undefined,
       limit: args.limit || undefined,
+      categories: args.yelpCategories || undefined
     };
-    
-    if (args.term != null & args.term != undefined) {
+    if(args.term != null & args.term != undefined) {
       variables.term = args.term;
     }
 

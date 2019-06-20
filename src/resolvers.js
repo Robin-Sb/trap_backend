@@ -29,7 +29,7 @@ const resolvers =
         async getPOI (_, args, context) {
             var query = context.query;
             var yelpPOIs = {};
-            var yelpBusiness = []
+            var yelpBusiness = [];
             var foursquarePOIs = {};
             var foursquareVenues = [];
             var customPOIs = [];
