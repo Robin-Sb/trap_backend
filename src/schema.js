@@ -48,6 +48,7 @@ type CustomPOI {
   createdAt: DateTime
   updatedAt: DateTime
   tags: [Tag]
+  id: Int
 }
 
 type Tag {
