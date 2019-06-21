@@ -17,7 +17,7 @@ const resolvers =
             } else {
                 return models.CustomPOI.radiusQueryWithCategory(args.latitude, args.longitude, args.term, args.category).then(
                     poi => { return poi }
-                );    
+                );
             }
         },
 
@@ -33,25 +33,32 @@ const resolvers =
             var foursquarePOIs = {};
             var foursquareVenues = [];
             var customPOIs = [];
-            if (query.includes("yelpPOI")) {
-                yelpPOIs = await context.yelpAPI.getPOIs(args);
-                yelpBusiness = yelpPOIs.business;
-                console.log("executed yelp");
-            } 
-
-            if (query.includes("foursquarePOI")) {
-                foursquarePOIs = await context.foursquareAPI.getPOIs(args);
-                foursquareVenues = foursquarePOIs.venues;
-                console.log("executed foursquare");
+            try {
+                if (query.includes("yelpPOI")) {
+                    yelpPOIs = await context.yelpAPI.getPOIs(args, "search");
+                    yelpBusiness = yelpPOIs.business;
+                } 
+            } catch (exception) {
+                console.log(exception);
             }
 
-            // if (query.includes("customPOI")) {
-            //     customPOIs = await models.CustomPOI.radiusQuery(args.latitude, args.longitude, args.term);
-            //     console.log("executed custom");
-            // }
+            try {
+                if (query.includes("foursquarePOI")) {
+                    foursquarePOIs = await context.foursquareAPI.getPOIs(args);
+                    foursquareVenues = foursquarePOIs.venues;
+                }
+            } catch (exception) {
+                console.log(exception);
+            }
+            try {
+                if (query.includes("customPOI")) {				
+                    customPOIs = await models.CustomPOI.radiusQuery(args);
+                }
+            } catch (exception) {
+                console.log(exception);
+            }
 
             var pois = {};
-			console.log(yelpBusiness.length);
             for (var i = 0; i < yelpBusiness.length; i++) {
                 for (var j = 0; j < foursquareVenues.length; j++) {
                     var currentYelp = yelpBusiness[i];
@@ -63,11 +70,46 @@ const resolvers =
                     }
                 }
             }
-
             pois.yelpPOIs = yelpBusiness;
             pois.foursquarePOIs = foursquareVenues;
-            // pois.customPOIs = customPOIs;
+            pois.customPOIs = customPOIs;
             return pois;
+        },
+        async getAmount (_, args, context) {
+			var query = context.query;
+            var yelpAmount = {};
+            var foursquareAmount = {};
+            var customAmount = {};
+            try {
+                if (query.includes("yelpAmount")) {
+                    var yelpResponse = await context.yelpAPI.getPOIs(args, "amount");
+                    yelpAmount = yelpResponse.total;
+                }
+            } catch (exception) {
+                console.log(exception);
+            }
+            try {
+                if (query.includes("foursquareAmount")) {
+                    var foursquareResponse = await context.foursquareAPI.getPOIs(args, "amount");
+                    foursquareAmount = foursquareResponse.venues.length;
+                }
+            } catch (exception) {
+                console.log(exception);
+            }
+            try {
+                if (query.includes("customAmount")) {
+                    var customResponse = await models.CustomPOI.radiusQuery(args);
+                    customAmount = customResponse.length;
+                }            
+            } catch (exception) {
+                console.log(exception);
+            }
+
+            return {
+                yelpAmount: yelpAmount,
+                foursquareAmount: foursquareAmount,
+                customAmount: customAmount
+            }
         }
     },
 
@@ -99,6 +141,15 @@ const resolvers =
         // customPOI (obj) {
         //     return obj.customPOIs;
         // }
+    },
+
+    Amount: {
+        yelpAmount (obj) {
+            return obj.yelpAmount
+        },
+        foursquareAmount (obj) {
+            return obj.foursquareAmount
+        }
     },
      
     Mutation: {

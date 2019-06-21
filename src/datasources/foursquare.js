@@ -15,12 +15,20 @@ class FoursquareAPI extends RESTDataSource {
         request.params.set('v', 20190425);
     }
   
-    async getPOIs(args) {
+    async getPOIs(args, type) {
       const query = {
         ll: args.latitude + "," + args.longitude,
         intent: "checkin",
-        radius: 40000,
-        limit: 15,
+      }
+
+      if (args.radius != undefined && args.radius != null) {
+        query.radius = args.radius;
+      } else if (args.limit != undefined && args.limit != null) {
+        query.radius = 50000
+      }
+
+      if (type == "search") {
+        query.limit = args.limit;
       }
 
       if (args.term != undefined || args.term != null) {

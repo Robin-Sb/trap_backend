@@ -8,12 +8,8 @@ type Query {
   yelpPOI (latitude: Float!, longitude: Float!, term: String, radius: Int, limit: Int, categories: String): [YelpPOI] 
   customPOI (latitude: Float!, longitude: Float!, term: String!, category: String): [CustomPOI]
   foursquarePOI (latitude: Float!, longitude: Float!, term: String, categories: String): [FoursquarePOI]
+  getAmount(latitude: Float!, longitude: Float!, radius: Int, yelpCategories: String, foursquareCategories: String): Amount
 }
-
-# type Yelp {
-#   total: Int
-#   business: [Business]
-# }
 
 type POI {
   yelpPOI: [YelpPOI]
@@ -34,6 +30,12 @@ type FoursquarePOI {
   name: String
   url: String
   coordinates: Coordinates 
+}
+
+type Amount {
+  yelpAmount: Int
+  foursquareAmount: Int
+  customAmount: Int
 }
 
 type Coordinates {
