@@ -64,7 +64,7 @@ type Mutation {
         description: String,
         latitude: Float!
         longitude: Float!
-        tags: [Int]
+        tags: [String]
     ): CustomPOI
 
     addTag (

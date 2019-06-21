@@ -138,9 +138,9 @@ const resolvers =
         foursquarePOI (obj) {
             return obj.foursquarePOIs;
         },
-        // customPOI (obj) {
-        //     return obj.customPOIs;
-        // }
+        customPOI (obj) {
+            return obj.customPOIs;
+        }
     },
 
     Amount: {
@@ -161,8 +161,12 @@ const resolvers =
                 longitude
             });
 
-            await poi.setTags(tags);
-
+            var tagIds = [];
+            for (var i = 0; i < tags.length; i++) {
+                var tag = await models.Tag.findOne({where: {name: tags[i]}})
+                tagIds.push(tag.id);
+            }
+            await poi.setTags(tagIds);
             return poi;
         },
         async addTag(_, {name}) {
@@ -211,5 +215,16 @@ const resolvers =
         }
     })
 };
+
+async function getTagIdByName(tags) {
+    for (var i = 0; i < tags.length; i++) {
+        console.log("tag " + tags[i]);
+        models.Tag.findOne( {where: {name: tags[i]}} ).then(response => {
+            console.log("Response: " + response)
+            tagIds.push(response.id);
+            console.log("tagId1: " + tagIds[0]);
+        });
+    }
+}
 
 module.exports = resolvers;
