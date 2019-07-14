@@ -36,15 +36,17 @@ module.exports = (sequelize, DataTypes) => {
 
   CustomPOI.radiusQuery = async function(args) {
 	var replacements = { latitude: args.latitude, longitude: args.longitude, radius: args.radius};
-    var termAppend = "";
+    var termAppend1 = "";
+    var termAppend2 = "";
     var term = args.term;
-	if (term != null && term != undefined) {
+	if (term) {
 		replacements.term = `%${term}%`
-		termAppend = " AND (p.name LIKE :term OR p.description LIKE :term OR (t.name LIKE :term))"
+        termAppend1 = " AND (p.name LIKE :term OR p.description LIKE :term) ";
+        termAppend2 = " OR t.name LIKE :term ";
     }
     var categoryAppend = "";
     
-    if (args.yelpCategories != undefined) {
+    if (args.yelpCategories) {
         var categoryReplacements = [];
         var categories = args.yelpCategories.split(',');
         categoryAppend = " AND t.name IN(:category)"
@@ -56,9 +58,9 @@ module.exports = (sequelize, DataTypes) => {
     var resolve;
     await sequelize.query(
         "SELECT DISTINCT p.id, p.name, p.description, p.longitude, p.latitude, p.createdAt, p.updatedAt FROM custompois p "
-        + "JOIN poi_tag pt ON p.id = pt.custompoiId JOIN tags t ON t.id = pt.tagId "
+        + "LEFT JOIN poi_tag pt ON p.id = pt.custompoiId LEFT JOIN tags t ON t.id = pt.tagId " + termAppend2
         + "WHERE ( acos(sin(p.latitude * 0.0175) * sin(:latitude * 0.0175) + cos(p.latitude * 0.0175) * cos(:latitude * 0.0175) * cos((:longitude * 0.0175) - (p.longitude * 0.0175))) * 6.371 <= :radius) "
-        + termAppend + categoryAppend
+        + termAppend1 + categoryAppend
         ,
     { replacements: replacements, type: sequelize.QueryTypes.SELECT }
     ).then(projects => {
